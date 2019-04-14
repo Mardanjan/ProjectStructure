@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        body{
+            padding: 30px;
+        }
+        ul, li{
+            display: inline-block;
+            list-style: none;
+        }
+        #box a{
+            text-decoration: none;
+            color: #2479dc;
+            padding: 5px 15px;
+        }
+        #box .router-link-active{
+            background: #2479dc;
+            color: #fff;
+        }
+    </style>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+<div id="box">
+    <div>
+        <router-link to="/home">首页</router-link> <!-- 会被vue识别，自动显示成a标签-->
+        <router-link to="/List">列表</router-link>
+        <router-link to="/users">用户</router-link>
+    </div>
+    <div>
+        <router-view></router-view>    <!-- 点击上面的link标签由，需要显示的内容 -->
+    </div>
+</div>
+
+<template id="temUser">
+    <div>
+
+        <h3>用户信息</h3>
+        <hr/>
+        <ul>
+            <li><router-link to="/users/2/xiaoming/哈哈">小明</router-link></li>
+            <li><router-link to="/users/xiaohong/15">小红</router-link></li>
+        </ul>
+        <div>
+            <router-view></router-view>    <!-- 点击上面的link标签由，需要显示的内容 -->
+        </div>
+    </div>
+</template>
+
+</body>
+<script>
+    /*组件*/
+    var Home = {
+        template:"<h3>我是主页的内容</h3>"
+    };
+    var List = {
+        template:"<h3>我是文章列表</h3>"
+    };
+    //用户
+    var users = {
+        template:"#temUser"
+    };
+
+    var xiaoming = {
+        template:"<h3>我是小明-{{$route.params.sysId}}{{$route.params.Id}}</h3>"
+    }
+    var xiaohong = {
+        template:"<h3>我是小红-{{$route.params.sysId}}</h3>"
+    }
+
+    //配置路由
+    var routerArr=[
+        {
+            path:"/home", /* router-link 的 to跳转的地址 */
+            component:Home  /* 路径对应的组件 */
+        },
+        {
+            path:"/List", /* router-link 的 to跳转的地址 */
+            component:List  /* 路径对应的组件 */
+        },
+        {
+            path:"/users", /* router-link 的 to跳转的地址 */
+            component:users,  /* 重定向到首页 */
+            children:[
+                {path:":Id/xiaoming/:sysId",component:xiaoming},
+                {path:"xiaohong/:sysId",component:xiaohong}
+            ]
+        },
+        {path:"*",component:Home}  /*其他的所有情况，都跳转到首页*/
+    ];
+
+    //生成路由示例
+    var router= new VueRouter({
+        routes:routerArr
+    });
+
+    var vm=new Vue({
+        el:'#box',
+        data:{},
+        /* 示例挂载路由 */
+        router:router
+    })
+</script>
+</html>
